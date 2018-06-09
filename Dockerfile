@@ -9,7 +9,9 @@ RUN apt-get update \
     && apt-get autoclean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone -b dev https://github.com/flutter/flutter.git /opt/flutter
+RUN git clone -b dev https://github.com/flutter/flutter.git /opt/flutter \
+    && cd /opt/flutter \
+    && git reset --hard $(git rev-list -1 $(git describe --tags @{u}))
 
 RUN curl -O https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
     && mkdir /opt/android-sdk \
