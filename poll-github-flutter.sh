@@ -17,7 +17,7 @@ fi
 
 post_url=$1
 
-git fetch
+git fetch --tags --prune --prune-tags
 
 git checkout master --
 
@@ -56,6 +56,21 @@ local_head=$(git rev-list -1 $(git describe --tags))
 
 if [ $origin_head != $local_head ]; then
    docker_tag="beta"
+
+   eval $curl_prefix$docker_tag$curl_postfix$post_url
+
+   git merge $origin_head
+
+   sleep 5m
+fi
+
+git checkout stable --
+
+origin_head=$(git rev-list -1 $(git describe --tags @{u}))
+local_head=$(git rev-list -1 $(git describe --tags))
+
+if [ $origin_head != $local_head ]; then
+   docker_tag="stable"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
 
