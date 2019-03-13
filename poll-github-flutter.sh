@@ -26,8 +26,10 @@ local_head=$(git rev-parse HEAD)
 
 if [ $origin_head != $local_head ]; then
    docker_tag="latest"
+   docker_tag_q="latest-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
 
@@ -41,8 +43,10 @@ local_head=$(git rev-list -1 $(git describe --tags))
 
 if [ $origin_head != $local_head ]; then
    docker_tag="dev"
+   docker_tag_q="dev-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
 
@@ -56,8 +60,10 @@ local_head=$(git rev-list -1 $(git describe --tags))
 
 if [ $origin_head != $local_head ]; then
    docker_tag="beta"
+   docker_tag_q="beta-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
 
@@ -71,8 +77,10 @@ local_head=$(git rev-list -1 $(git describe --tags))
 
 if [ $origin_head != $local_head ]; then
    docker_tag="stable"
+   docker_tag_q="stable-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
 
