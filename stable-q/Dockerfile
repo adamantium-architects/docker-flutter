@@ -21,7 +21,7 @@ RUN curl -O https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
 RUN mkdir ~/.android \
     && echo 'count=0' > ~/.android/repositories.cfg \
     && yes | sdkmanager --licenses \
-    && sdkmanager "tools" "build-tools;29.0.0-rc1" "platforms;android-Q" "platform-tools" \
+    && sdkmanager "tools" "build-tools;29.0.0-rc2" "platforms;android-Q" "platform-tools" \
     && yes | sdkmanager --licenses \
     && flutter doctor -v \
     && chown -R root:root /opt

@@ -29,6 +29,9 @@ if [ $origin_head != $local_head ]; then
    docker_tag_q="latest-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+
+   sleep 1m
+
    eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
@@ -46,6 +49,9 @@ if [ $origin_head != $local_head ]; then
    docker_tag_q="dev-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+
+   sleep 1m
+   
    eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
@@ -63,6 +69,9 @@ if [ $origin_head != $local_head ]; then
    docker_tag_q="beta-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+
+   sleep 1m
+   
    eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
@@ -80,6 +89,9 @@ if [ $origin_head != $local_head ]; then
    docker_tag_q="stable-q"
 
    eval $curl_prefix$docker_tag$curl_postfix$post_url
+
+   sleep 1m
+   
    eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
    git merge $origin_head
