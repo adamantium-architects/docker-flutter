@@ -17,6 +17,8 @@ fi
 
 post_url=$1
 
+git reset --hard HEAD
+
 git fetch --tags --prune --prune-tags
 
 git checkout master --
