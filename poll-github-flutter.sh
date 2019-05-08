@@ -15,14 +15,24 @@ if [ $# == 0 ]; then
    exit 1
 fi
 
-# $1 = origin head
-# $2 = local head
-# $3 = docker image name
+# $1 = docker image name
 function check_differences()
 {
-   if [ $1 != $2 ]; then
-      docker_tag="$3"
-      docker_tag_q="$3-q"
+   if [ "$1" == "latest" ]; then
+      git checkout master --
+
+      origin_head=$(git rev-parse @{u})
+      local_head=$(git rev-parse HEAD)
+   else
+      git checkout $1 --
+
+      origin_head=$(git rev-list -1 $(git describe --tags @{u}))
+      local_head=$(git rev-list -1 $(git describe --tags))
+   fi
+
+   if [ $origin_head != $local_head ]; then
+      docker_tag="$1"
+      docker_tag_q="$1-q"
 
       eval $curl_prefix$docker_tag$curl_postfix$post_url
 
@@ -42,24 +52,10 @@ git reset --hard HEAD
 
 git fetch --tags --prune --prune-tags
 
-origin_head=$(git rev-parse @{u})
-local_head=$(git rev-parse HEAD)
+check_differences "latest"
 
-git checkout master --
+check_differences "dev"
 
-check_differences $origin_head $local_head "latest"
+check_differences "beta"
 
-origin_head=$(git rev-list -1 $(git describe --tags @{u}))
-local_head=$(git rev-list -1 $(git describe --tags))
-
-git checkout dev --
-
-check_differences $origin_head $local_head "dev"
-
-git checkout beta --
-
-check_differences $origin_head $local_head "beta"
-
-git checkout stable --
-
-check_differences $origin_head $local_head "stable"
+check_differences "stable"
