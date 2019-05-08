@@ -15,88 +15,51 @@ if [ $# == 0 ]; then
    exit 1
 fi
 
+# $1 = origin head
+# $2 = local head
+# $3 = docker image name
+function check_differences()
+{
+   if [ $1 != $2 ]; then
+      docker_tag="$3"
+      docker_tag_q="$3-q"
+
+      eval $curl_prefix$docker_tag$curl_postfix$post_url
+
+      sleep 1m
+
+      eval $curl_prefix$docker_tag_q$curl_postfix$post_url
+
+      git merge $origin_head
+
+      sleep 5m
+   fi
+}
+
 post_url=$1
 
 git reset --hard HEAD
 
 git fetch --tags --prune --prune-tags
 
-git checkout master --
-
 origin_head=$(git rev-parse @{u})
 local_head=$(git rev-parse HEAD)
 
-if [ $origin_head != $local_head ]; then
-   docker_tag="latest"
-   docker_tag_q="latest-q"
+git checkout master --
 
-   eval $curl_prefix$docker_tag$curl_postfix$post_url
+check_differences $origin_head $local_head "latest"
 
-   sleep 1m
-
-   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
-
-   git merge $origin_head
-
-   sleep 5m
-fi
+origin_head=$(git rev-list -1 $(git describe --tags @{u}))
+local_head=$(git rev-list -1 $(git describe --tags))
 
 git checkout dev --
 
-origin_head=$(git rev-list -1 $(git describe --tags @{u}))
-local_head=$(git rev-list -1 $(git describe --tags))
-
-if [ $origin_head != $local_head ]; then
-   docker_tag="dev"
-   docker_tag_q="dev-q"
-
-   eval $curl_prefix$docker_tag$curl_postfix$post_url
-
-   sleep 1m
-   
-   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
-
-   git merge $origin_head
-
-   sleep 5m
-fi
+check_differences $origin_head $local_head "dev"
 
 git checkout beta --
 
-origin_head=$(git rev-list -1 $(git describe --tags @{u}))
-local_head=$(git rev-list -1 $(git describe --tags))
-
-if [ $origin_head != $local_head ]; then
-   docker_tag="beta"
-   docker_tag_q="beta-q"
-
-   eval $curl_prefix$docker_tag$curl_postfix$post_url
-
-   sleep 1m
-   
-   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
-
-   git merge $origin_head
-
-   sleep 5m
-fi
+check_differences $origin_head $local_head "beta"
 
 git checkout stable --
 
-origin_head=$(git rev-list -1 $(git describe --tags @{u}))
-local_head=$(git rev-list -1 $(git describe --tags))
-
-if [ $origin_head != $local_head ]; then
-   docker_tag="stable"
-   docker_tag_q="stable-q"
-
-   eval $curl_prefix$docker_tag$curl_postfix$post_url
-
-   sleep 1m
-   
-   eval $curl_prefix$docker_tag_q$curl_postfix$post_url
-
-   git merge $origin_head
-
-   sleep 5m
-fi
+check_differences $origin_head $local_head "stable"
