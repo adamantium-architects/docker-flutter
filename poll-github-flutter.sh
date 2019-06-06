@@ -32,13 +32,8 @@ function check_differences()
 
    if [ $origin_head != $local_head ]; then
       docker_tag="$1"
-      docker_tag_q="$1-q"
 
       eval $curl_prefix$docker_tag$curl_postfix$post_url
-
-      sleep 1m
-
-      eval $curl_prefix$docker_tag_q$curl_postfix$post_url
 
       git merge $origin_head
 
